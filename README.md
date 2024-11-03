@@ -1,11 +1,13 @@
-Quick scanner for /24 subnet
+# aping
 
-Compile:
+## Fast scanner for your /24 network in 1 second.
+
+### Compile:
 ```
 go build -ldflags "-linkmode external -extldflags '-static'" -o aping
 ```
 
-Usage:
+### Usage:
 ```
 root@nuc:/aping# ./aping
 10.8.0.1
