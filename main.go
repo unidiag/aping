@@ -81,7 +81,7 @@ func main() {
 		fmt.Println("No results for " + netIp + ".0")
 	} else {
 		for _, v := range pinger {
-			if v == localAddrIp {
+			if v == localAddrIp  || (len(os.Args) > 1 && os.Args[1] == v){
 				color.Green(v)
 			} else {
 				fmt.Println(v)
