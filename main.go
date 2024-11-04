@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -13,6 +16,8 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/transform"
 )
 
 var (
@@ -26,13 +31,19 @@ func ping(ip string) bool {
 
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command("ping", "-n", "1", "-w", "1000", ip)
-		ans = "получено = 1"
+		ans = " = 1"
 	}
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return false
 	}
-	return strings.Contains(string(output), ans)
+	if runtime.GOOS == "windows" {
+		decoder := charmap.Windows1251.NewDecoder()
+		decodedOutput, _ := ioutil.ReadAll(transform.NewReader(bytes.NewReader(output), decoder))
+		output = decodedOutput
+	}
+	o := strings.Contains(string(output), ans)
+	return o
 }
 
 func scanNetwork(wg *sync.WaitGroup, ip string) {
@@ -87,7 +98,7 @@ func main() {
 		fmt.Println("No results for " + netIp + ".0")
 	} else {
 		for _, v := range pinger {
-			if v == localAddrIp  || (len(os.Args) > 1 && os.Args[1] == v){
+			if v == localAddrIp || (len(os.Args) > 1 && os.Args[1] == v) {
 				color.Green(v)
 			} else {
 				fmt.Println(v)
