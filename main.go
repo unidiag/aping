@@ -32,7 +32,7 @@ func ping(ip string) bool {
 	if err != nil {
 		return false
 	}
-	return strings.Contains(string(output), "1 received")
+	return strings.Contains(string(output), ans)
 }
 
 func scanNetwork(wg *sync.WaitGroup, ip string) {
